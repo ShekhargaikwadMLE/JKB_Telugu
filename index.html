@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jan Ki Baat - Request a Callback</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            margin: 0;
+        }
+        .wrapper {
+            display: flex;
+            width: 70%;
+            max-width: 800px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            background: #fff;
+            align-items: center;
+        }
+        .image-section {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-color: #fafafa;
+        }
+        .image-section img {
+            max-width: 80%;
+            height: auto;
+            border-radius: 10px;
+        }
+        .form-section {
+            flex: 1;
+            padding: 40px;
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            display: none;
+        }
+        .error {
+            color: red;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+        @media (max-width: 768px) {
+            .wrapper {
+                flex-direction: column;
+            }
+            .image-section {
+                padding: 10px;
+            }
+            .form-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="image-section">
+        <img src="image.png" alt="Jan Ki Baat Character">
+    </div>
+
+    <div class="form-section">
+        <h2>Request a Callback</h2>
+        <input type="text" id="phoneNumber" placeholder="Enter your phone number" />
+        <button onclick="makeCall()">Call Now</button>
+        <p id="responseMessage" class="message"></p>
+        <div class="footer">
+            Powered by Jan Ki Baat | © 2024
+        </div>
+    </div>
+</div>
+
+<script>
+    function makeCall() {
+        const phone = document.getElementById("phoneNumber").value;
+        const messageElement = document.getElementById("responseMessage");
+
+        const phoneRegex = /^[+][0-9]{10,15}$/;
+        if (!phoneRegex.test(phone)) {
+            alert("Please enter a valid phone number in international format.");
+            return;
+        }
+
+        messageElement.style.display = "none";
+
+        fetch("https://voiceagent.infers.co/api/calls/start_outbound_call", {
+            method: "POST",
+            headers: {
+                "Authorization": "52a48a1bf4bbc290ac3e6982020af9178e6623d4582fc35d769b2af9ad0c2c39",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                voice_agent_id: "b05d88bd0ce9e750668e75ab27fc8643c970379d430e5248af133e4f760ff8af",
+                to_phone: phone
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "success") {
+                messageElement.innerText = "Call Initiated!";
+                messageElement.classList.remove("error");
+            } else {
+                messageElement.innerText = "Failed to initiate call.";
+                messageElement.classList.add("error");
+            }
+            messageElement.style.display = "block";
+        })
+        .catch(error => {
+            messageElement.innerText = "Error initiating call.";
+            messageElement.classList.add("error");
+            messageElement.style.display = "block";
+        });
+    }
+</script>
+
+</body>
+</html>
