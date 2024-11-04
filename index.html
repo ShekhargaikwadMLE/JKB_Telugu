@@ -52,17 +52,28 @@
             font-size: 28px;
             font-weight: bold;
         }
-        input {
-            width: 100%;
-            padding: 14px;
+        .phone-input-wrapper {
+            display: flex;
+            align-items: center;
             margin-bottom: 20px;
             border: 2px solid #ddd;
             border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s;
+            overflow: hidden;
         }
-        input:focus {
-            border-color: #007bff;
+        .phone-prefix {
+            background-color: #eee;
+            padding: 0 12px;
+            font-size: 16px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            border-right: 1px solid #ddd;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            font-size: 16px;
             outline: none;
         }
         button {
@@ -115,7 +126,10 @@
 
     <div class="form-section">
         <h2>Request a Callback</h2>
-        <input type="text" id="phoneNumber" placeholder="Enter your phone number" />
+        <div class="phone-input-wrapper">
+            <span class="phone-prefix">+91</span>
+            <input type="text" id="phoneNumber" placeholder="Enter your 10-digit phone number" />
+        </div>
         <button onclick="makeCall()">Call Now</button>
         <p id="responseMessage" class="message"></p>
         <div class="footer">
@@ -126,12 +140,14 @@
 
 <script>
     function makeCall() {
-        const phone = document.getElementById("phoneNumber").value;
+        const phoneInput = document.getElementById("phoneNumber").value;
+        const phone = "+91" + phoneInput; // Append +91 prefix automatically
         const messageElement = document.getElementById("responseMessage");
 
-        const phoneRegex = /^[+][0-9]{10,15}$/;
-        if (!phoneRegex.test(phone)) {
-            alert("Please enter a valid phone number in international format.");
+        // Validate the phone number format for 10 digits
+        const phoneRegex = /^[0-9]{10}$/;
+        if (!phoneRegex.test(phoneInput)) {
+            alert("Please enter a valid 10-digit phone number.");
             return;
         }
 
